@@ -7,9 +7,12 @@ RANGE = (TILE_SIZE // 2, WINDOW - TILE_SIZE // 2, TILE_SIZE)
 get_random_position = lambda: [randrange(*RANGE), randrange(*RANGE)]
 snake = pg.rect.Rect([0, 0, TILE_SIZE - 2, TILE_SIZE - 2])
 snake.center = get_random_position()
-lenght = 1
+length = 1
 segments = [snake.copy()]
 snake_dir = (0, 0)
+time, time_step = 0, 110
+food = snake.copy()
+food.center = get_random_position()
 screen = pg.display.set_mode([WINDOW] * 2)
 clock = pg.time.Clock()
 
@@ -27,11 +30,16 @@ while True:
             if event.key == pg.K_d:
                 snake_dir = (TILE_SIZE, 0)
             screen.fill("black")
-            # add the snake on the screen
+            # adds the food on the screen
+            pg.draw.rect(screen, "red", food)
+            # adds the snake on the screen
             [pg.draw.rect(screen, 'green', segment) for segment in segments]
             # move the snake
-            snake.move_ip(snake_dir)
-            segments.append(snake,copy())
-            semnents = segments[-length:]
+            time_now = pg.time.get_ticks()
+            if time_now - time > time_step:
+                time = time_now
+                snake.move_ip(snake_dir)
+                segments.append(snake.copy())
+                segments = segments[-length:]
             pg.display.flip()
             clock.tick(60)
