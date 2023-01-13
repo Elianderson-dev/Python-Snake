@@ -1,7 +1,7 @@
 import pygame as pg
 from random import randrange
 
-WINDOW = 500
+WINDOW = 1000
 TILE_SIZE = 50
 RANGE = (TILE_SIZE // 2, WINDOW - TILE_SIZE // 2, TILE_SIZE)
 get_random_position = lambda: [randrange(*RANGE), randrange(*RANGE)]
@@ -30,6 +30,15 @@ while True:
             if event.key == pg.K_d:
                 snake_dir = (TILE_SIZE, 0)
             screen.fill("black")
+            # adds border impact
+            if snake.left < 0 or snake.right > WINDOW or snake.top < 0 or snake.bottom > WINDOW:
+                snake.center, food.center = get_random_position(), get_random_position()
+                length, snake_dir = 1, (0, 0)
+                segments = [snake.copy()]
+            # check the food
+            if snake.center == food.center:
+                food.center = get_random_position()
+                length += 1
             # adds the food on the screen
             pg.draw.rect(screen, "red", food)
             # adds the snake on the screen
